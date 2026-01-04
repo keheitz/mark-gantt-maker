@@ -1,2 +1,72 @@
-/* ColorCustomizer styles will be implemented here */
+.color-customizer {
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
 
+.customizer-title {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.color-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.color-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.color-hex-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.color-hex-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  ring: 2px solid var(--color-primary);
+}

@@ -1,8 +1,12 @@
+import { useState } from 'react'
 import GanttChart from './components/GanttChart/GanttChart'
 import TaskList from './components/TaskEditor/TaskList'
+import ThemeModal from './components/ThemeSelector/ThemeModal'
 import { useGanttData } from './hooks/useGanttData'
+import { useTheme } from './hooks/useTheme'
 import { getTodayDateString } from './utils/viewModes'
 import './styles/globals.css'
+import './styles/themes.css'
 
 /**
  * Gets today's date and creates sample tasks for demonstrating 15-minute view.
@@ -48,12 +52,23 @@ function getSampleTasks() {
 
 function App() {
   const { tasks, addTask, updateTask, deleteTask } = useGanttData(getSampleTasks)
+  const { theme, setTheme } = useTheme()
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Mark Gantt Maker</h1>
-        <p className="subtitle">15-Minute Time-Blocking View</p>
+        <div className="header-content">
+          <h1>Mark Gantt Maker</h1>
+          <p className="subtitle">15-Minute Time-Blocking View</p>
+        </div>
+        <button 
+          className="theme-toggle-btn" 
+          onClick={() => setIsThemeModalOpen(true)}
+          title="Change Theme"
+        >
+          <i className="fas fa-palette"></i> Theme
+        </button>
       </header>
       <main className="app-main">
         <TaskList
@@ -64,6 +79,13 @@ function App() {
         />
         <GanttChart tasks={tasks} />
       </main>
+
+      <ThemeModal 
+        isOpen={isThemeModalOpen} 
+        onClose={() => setIsThemeModalOpen(false)} 
+        theme={theme}
+        setTheme={setTheme}
+      />
     </div>
   )
 }

@@ -1,2 +1,61 @@
-/* Theme styles will be implemented here */
+/* Base styles using theme variables */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
+/* Gantt Chart overrides for theming */
+.gantt-container {
+  background-color: var(--color-background);
+}
+
+.gantt .grid-header {
+  fill: var(--color-surface);
+  stroke: var(--color-border);
+}
+
+.gantt .grid-row {
+  fill: var(--color-surface);
+}
+
+.gantt .grid-row:nth-child(even) {
+  fill: rgba(0, 0, 0, 0.02);
+}
+
+.gantt .bar {
+  fill: var(--color-primary);
+}
+
+.gantt .bar-progress {
+  fill: var(--color-secondary);
+}
+
+.gantt .bar-label {
+  fill: #ffffff; /* Keep labels white for better contrast on bars */
+}
+
+.gantt .handle {
+  fill: var(--color-secondary);
+}
+
+.gantt .arrow {
+  stroke: var(--color-text);
+  opacity: 0.5;
+}
+
+/* App Header styling moved to globals.css but we ensure variables are used */
+.app-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+/* Buttons */
+button.primary-btn {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+button.secondary-btn {
+  background-color: var(--color-secondary);
+  color: white;
+}
