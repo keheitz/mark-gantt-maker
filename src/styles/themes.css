@@ -7,11 +7,11 @@ body {
 
 /* Gantt Chart overrides for theming */
 .gantt-container {
-  background-color: var(--color-background);
+  background-color: #ffffff;
 }
 
 .gantt .grid-header {
-  fill: var(--color-surface);
+  fill: #ffffff;
   stroke: var(--color-border);
 }
 

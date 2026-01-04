@@ -13,6 +13,7 @@
   width: 100%;
   overflow-x: auto;
   padding: var(--spacing-md, 16px);
+  background: #ffffff;
 }
 
 /* Override frappe-gantt styles for 15-minute view */
@@ -22,7 +23,7 @@
 
 /* Header styling */
 .gantt-container .gantt .grid-header {
-  fill: var(--color-background, #f8f9fb);
+  fill: #ffffff;
 }
 
 .gantt-container .gantt .upper-text,
