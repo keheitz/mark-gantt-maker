@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import GanttChart from './components/GanttChart/GanttChart'
 import TaskList from './components/TaskEditor/TaskList'
 import ThemeModal from './components/ThemeSelector/ThemeModal'
+import ExportControls from './components/ExportControls/ExportControls'
 import { useGanttData } from './hooks/useGanttData'
 import { useTheme } from './hooks/useTheme'
 import { getTodayDateString } from './utils/viewModes'
@@ -54,6 +55,7 @@ function App() {
   const { tasks, addTask, updateTask, deleteTask } = useGanttData(getSampleTasks)
   const { theme, setTheme } = useTheme()
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
+  const ganttRef = useRef(null)
 
   return (
     <div className="app">
@@ -62,13 +64,16 @@ function App() {
           <h1>Mark Gantt Maker</h1>
           <p className="subtitle">15-Minute Time-Blocking View</p>
         </div>
-        <button 
-          className="theme-toggle-btn" 
-          onClick={() => setIsThemeModalOpen(true)}
-          title="Change Theme"
-        >
-          <i className="fas fa-palette"></i> Theme
-        </button>
+        <div className="header-actions">
+          <ExportControls ganttContainerRef={ganttRef} />
+          <button 
+            className="theme-toggle-btn" 
+            onClick={() => setIsThemeModalOpen(true)}
+            title="Change Theme"
+          >
+            <i className="fas fa-palette"></i> Theme
+          </button>
+        </div>
       </header>
       <main className="app-main">
         <TaskList
@@ -77,7 +82,7 @@ function App() {
           onUpdateTask={updateTask}
           onDeleteTask={deleteTask}
         />
-        <GanttChart tasks={tasks} />
+        <GanttChart ref={ganttRef} tasks={tasks} />
       </main>
 
       <ThemeModal 

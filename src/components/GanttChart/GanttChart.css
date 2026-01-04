@@ -167,3 +167,39 @@
 .gantt-container::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted, #6b7280);
 }
+
+/* Printing styles for high-quality export */
+.gantt-wrapper.gantt-printing {
+  box-shadow: none;
+  border-radius: 0;
+  background: white;
+}
+
+.gantt-wrapper.gantt-printing .gantt-container {
+  overflow: visible;
+  padding: 0;
+}
+
+.gantt-wrapper.gantt-printing .gantt-container .gantt {
+  /* Ensure all lines are visible in high-res */
+  shape-rendering: geometricPrecision;
+}
+
+@media print {
+  .app-header, .task-list, .export-controls, .theme-toggle-btn {
+    display: none !important;
+  }
+  
+  .app-main {
+    padding: 0 !important;
+  }
+  
+  .gantt-wrapper {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .gantt-container {
+    overflow: visible !important;
+  }
+}

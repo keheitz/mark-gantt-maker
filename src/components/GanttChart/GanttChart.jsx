@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, forwardRef } from 'react'
 import Gantt from 'frappe-gantt'
 import { FIFTEEN_MINUTE_VIEW } from '../../utils/viewModes'
 import './GanttChart.css'
@@ -10,8 +10,9 @@ import './GanttChart.css'
  * @param {Object} props
  * @param {Array} props.tasks - Array of task objects with id, name, start, end, progress
  * @param {Object} props.options - Optional frappe-gantt options to override defaults
+ * @param {React.Ref} ref - Forwarded ref for the gantt-wrapper element
  */
-function GanttChart({ tasks, options = {} }) {
+const GanttChart = forwardRef(({ tasks, options = {} }, ref) => {
   const ganttContainer = useRef(null)
   const ganttInstance = useRef(null)
 
@@ -59,10 +60,10 @@ function GanttChart({ tasks, options = {} }) {
   }, [tasks, options])
 
   return (
-    <div className="gantt-wrapper">
+    <div className="gantt-wrapper" ref={ref}>
       <div ref={ganttContainer} className="gantt-container" />
     </div>
   )
-}
+})
 
 export default GanttChart

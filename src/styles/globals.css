@@ -71,6 +71,12 @@ body {
   text-align: left;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .app-header h1 {
   font-size: 1.75rem;
   font-weight: 600;
