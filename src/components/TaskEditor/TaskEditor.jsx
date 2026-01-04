@@ -27,7 +27,7 @@ function formatDateForDisplay(dateString) {
 /**
  * Time picker component with hour, minute, and AM/PM selection
  */
-function TimePicker({ hour, minute, period, onChange, label }) {
+function TimePicker({ hour, minute, period, onChange, label, idPrefix }) {
   const hours = Array.from({ length: 12 }, (_, i) => i + 1)
   const minutes = Array.from({ length: 60 }, (_, i) => i)
   
@@ -36,8 +36,9 @@ function TimePicker({ hour, minute, period, onChange, label }) {
       <label className="time-picker-main-label">{label}</label>
       <div className="time-picker">
         <div className="time-picker-group">
-          <label className="time-picker-label">Hour</label>
+          <label htmlFor={`${idPrefix}-hour`} className="time-picker-label">Hour</label>
           <select
+            id={`${idPrefix}-hour`}
             className="time-select"
             value={hour}
             onChange={(e) => onChange('hour', parseInt(e.target.value))}
@@ -47,10 +48,11 @@ function TimePicker({ hour, minute, period, onChange, label }) {
             ))}
           </select>
         </div>
-        <span className="time-separator">:</span>
+        <span className="time-separator" aria-hidden="true">:</span>
         <div className="time-picker-group">
-          <label className="time-picker-label">Min</label>
+          <label htmlFor={`${idPrefix}-min`} className="time-picker-label">Min</label>
           <select
+            id={`${idPrefix}-min`}
             className="time-select"
             value={minute}
             onChange={(e) => onChange('minute', parseInt(e.target.value))}
@@ -61,8 +63,9 @@ function TimePicker({ hour, minute, period, onChange, label }) {
           </select>
         </div>
         <div className="time-picker-group">
-          <label className="time-picker-label">AM/PM</label>
+          <label htmlFor={`${idPrefix}-period`} className="time-picker-label">AM/PM</label>
           <select
+            id={`${idPrefix}-period`}
             className="time-select period-select"
             value={period}
             onChange={(e) => onChange('period', e.target.value)}
@@ -79,7 +82,7 @@ function TimePicker({ hour, minute, period, onChange, label }) {
 /**
  * Time-only picker that uses the provided date
  */
-function TimeOnlyPicker({ value, dateString, onChange, label }) {
+function TimeOnlyPicker({ value, dateString, onChange, label, idPrefix }) {
   // Parse existing value or use defaults
   const parseValue = () => {
     if (!value) {
@@ -133,6 +136,7 @@ function TimeOnlyPicker({ value, dateString, onChange, label }) {
       period={period}
       onChange={handleTimeChange}
       label={label}
+      idPrefix={idPrefix}
     />
   )
 }
@@ -191,8 +195,9 @@ function detectCircularDependency(currentTaskId, proposedDependencies, allTasks)
 /**
  * Multi-select dropdown for choosing task dependencies
  */
-function DependencySelector({ selectedDependencies, availableTasks, onChange, currentTaskId, error }) {
+function DependencySelector({ selectedDependencies, availableTasks, onChange, currentTaskId, error, ariaLabelledBy }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [focusedIndex, setFocusedIndex] = useState(-1)
   
   // Filter out current task and sort by name
   const filteredTasks = availableTasks
@@ -204,7 +209,7 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
   const selectedIds = depsString.split(',').filter(Boolean).map(s => s.trim())
   
   const toggleDependency = (taskId, e) => {
-    e.stopPropagation()
+    if (e) e.stopPropagation()
     let newDeps
     if (selectedIds.includes(taskId)) {
       newDeps = selectedIds.filter(id => id !== taskId)
@@ -224,6 +229,34 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
     const task = availableTasks.find(t => t.id === taskId)
     return task ? task.name : taskId
   }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      if (!isOpen) {
+        setIsOpen(true)
+        setFocusedIndex(0)
+      } else if (focusedIndex >= 0) {
+        toggleDependency(filteredTasks[focusedIndex].id)
+      }
+      e.preventDefault()
+    } else if (e.key === 'ArrowDown') {
+      if (!isOpen) {
+        setIsOpen(true)
+        setFocusedIndex(0)
+      } else {
+        setFocusedIndex(prev => (prev + 1) % filteredTasks.length)
+      }
+      e.preventDefault()
+    } else if (e.key === 'ArrowUp') {
+      if (isOpen) {
+        setFocusedIndex(prev => (prev - 1 + filteredTasks.length) % filteredTasks.length)
+      }
+      e.preventDefault()
+    } else if (e.key === 'Escape') {
+      setIsOpen(false)
+      e.preventDefault()
+    }
+  }
   
   if (filteredTasks.length === 0) {
     return (
@@ -238,6 +271,13 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
       <div 
         className={`dependency-select-trigger ${isOpen ? 'open' : ''} ${error ? 'error' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        tabIndex="0"
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-labelledby={ariaLabelledBy}
+        aria-controls="dependency-listbox"
       >
         <div className="selected-deps">
           {selectedIds.length === 0 ? (
@@ -258,22 +298,29 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
             ))
           )}
         </div>
-        <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
+        <span className="dropdown-arrow" aria-hidden="true">{isOpen ? '▲' : '▼'}</span>
       </div>
       
       {isOpen && (
-        <div className="dependency-dropdown">
-          {filteredTasks.map(task => (
+        <div 
+          id="dependency-listbox"
+          className="dependency-dropdown"
+          role="listbox"
+          aria-multiselectable="true"
+        >
+          {filteredTasks.map((task, index) => (
             <div 
               key={task.id} 
-              className={`dependency-option ${selectedIds.includes(task.id) ? 'selected' : ''}`}
+              className={`dependency-option ${selectedIds.includes(task.id) ? 'selected' : ''} ${focusedIndex === index ? 'focused' : ''}`}
               onClick={(e) => toggleDependency(task.id, e)}
+              role="option"
+              aria-selected={selectedIds.includes(task.id)}
             >
-              <span className="dep-checkbox">
+              <span className="dep-checkbox" aria-hidden="true">
                 {selectedIds.includes(task.id) ? '✓' : ''}
               </span>
               <span className="dependency-name">{task.name}</span>
-              <span className="dependency-id">{task.id}</span>
+              <span className="dependency-id" aria-label={`Task ID: ${task.id}`}>({task.id})</span>
             </div>
           ))}
         </div>
@@ -286,6 +333,22 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
  * Main TaskEditor component for adding and editing tasks
  */
 function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
+  // Add escape key handler and focus trapping
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onCancel()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    
+    // Focus the first input on mount
+    const firstInput = document.getElementById('name')
+    if (firstInput) firstInput.focus()
+    
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onCancel])
+
   // Get the date from the task or default to today
   const getDateFromTask = () => {
     if (task?.start) {
@@ -429,15 +492,26 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
   }
 
   return (
-    <div className="task-editor-overlay" onClick={onCancel}>
+    <div 
+      className="task-editor-overlay" 
+      onClick={onCancel}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <form 
         onSubmit={handleSubmit} 
         className="task-editor"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="task-editor-header">
-          <h2>{task?.id ? 'Edit Task' : 'Add New Task'}</h2>
-          <button type="button" className="close-btn" onClick={onCancel}>
+          <h2 id="modal-title">{task?.id ? 'Edit Task' : 'Add New Task'}</h2>
+          <button 
+            type="button" 
+            className="close-btn" 
+            onClick={onCancel}
+            aria-label="Close dialog"
+          >
             ×
           </button>
         </div>
@@ -445,7 +519,7 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
         <div className="task-editor-body">
           <div className="form-group">
             <label htmlFor="name">
-              Task Name <span className="required">*</span>
+              Task Name <span className="required" aria-hidden="true">*</span>
             </label>
             <input
               type="text"
@@ -454,8 +528,12 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
               onChange={(e) => handleChange('name', e.target.value)}
               placeholder="Enter task name"
               className={errors.name ? 'error' : ''}
+              required
+              aria-required="true"
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? 'name-error' : undefined}
             />
-            {errors.name && <span className="error-text">{errors.name}</span>}
+            {errors.name && <span className="error-text" id="name-error">{errors.name}</span>}
           </div>
 
           <div className="form-group">
@@ -467,8 +545,9 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
                 value={selectedDate}
                 onChange={(e) => handleDateChange(e.target.value)}
                 className="date-input"
+                aria-label="Select task date"
               />
-              <span className="date-display">{formatDateForDisplay(selectedDate)}</span>
+              <span className="date-display" aria-hidden="true">{formatDateForDisplay(selectedDate)}</span>
             </div>
           </div>
 
@@ -478,7 +557,8 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
                 value={formData.start}
                 dateString={selectedDate}
                 onChange={(val) => handleChange('start', val)}
-                label={<>Start Time <span className="required">*</span></>}
+                label={<>Start Time <span className="required" aria-hidden="true">*</span></>}
+                idPrefix="start-time"
               />
               {errors.start && <span className="error-text">{errors.start}</span>}
             </div>
@@ -488,7 +568,8 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
                 value={formData.end}
                 dateString={selectedDate}
                 onChange={(val) => handleChange('end', val)}
-                label={<>End Time <span className="required">*</span></>}
+                label={<>End Time <span className="required" aria-hidden="true">*</span></>}
+                idPrefix="end-time"
               />
               {errors.end && <span className="error-text">{errors.end}</span>}
             </div>
@@ -505,6 +586,9 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
                 min="0"
                 max="100"
                 className="progress-slider"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow={formData.progress}
               />
               <input
                 type="number"
@@ -516,20 +600,26 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
                 min="0"
                 max="100"
                 className="progress-number"
+                aria-label="Progress percentage"
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label>Dependencies</label>
+            <label id="deps-label">Dependencies</label>
             <DependencySelector
               selectedDependencies={formData.dependencies}
               availableTasks={allTasks}
               onChange={(val) => handleChange('dependencies', val)}
               currentTaskId={task?.id}
               error={errors.dependencies}
+              ariaLabelledBy="deps-label"
             />
-            {errors.dependencies && <span className="error-text">{errors.dependencies}</span>}
+            {errors.dependencies && (
+              <span className="error-text" id="deps-error">
+                {errors.dependencies}
+              </span>
+            )}
             <small className="help-text">Select tasks that must complete before this task can start</small>
           </div>
         </div>

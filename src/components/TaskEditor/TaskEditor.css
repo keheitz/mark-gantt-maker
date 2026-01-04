@@ -612,6 +612,11 @@
   transition: all 0.15s ease;
 }
 
+.dependency-select-trigger:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .dependency-select-trigger:hover {
   border-color: var(--color-secondary);
 }
@@ -748,6 +753,12 @@
 
 .dependency-option:hover {
   background: var(--color-background);
+}
+
+.dependency-option.focused {
+  background: var(--color-background);
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
 }
 
 .dependency-option.selected {

@@ -116,21 +116,31 @@ function App() {
           <p className="subtitle">15-Minute Time-Blocking View</p>
         </div>
         <div className="header-actions">
-          {saveStatus && <span className="save-status-msg">{saveStatus}</span>}
+          {saveStatus && (
+            <span 
+              className="save-status-msg" 
+              role="status" 
+              aria-live="polite"
+            >
+              {saveStatus}
+            </span>
+          )}
           <ExportControls ganttContainerRef={ganttRef} />
           <button 
             className="theme-toggle-btn" 
             onClick={() => setIsThemeModalOpen(true)}
             title="Change Theme"
+            aria-label="Change Theme"
           >
-            <i className="fas fa-palette"></i> Theme
+            <i className="fas fa-palette" aria-hidden="true"></i> Theme
           </button>
           <button 
             className="reset-btn" 
             onClick={handleReset}
             title="Reset to Sample Tasks"
+            aria-label="Reset to Sample Tasks"
           >
-            <i className="fas fa-rotate-left"></i> Reset
+            <i className="fas fa-rotate-left" aria-hidden="true"></i> Reset
           </button>
         </div>
       </header>
@@ -147,11 +157,26 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <div className="shortcuts-info">
-          <span className="shortcut-item"><kbd>{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> Save</span>
-          <span className="shortcut-item"><kbd>{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> Export PDF</span>
-          <span className="shortcut-item"><kbd>{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd> Add Task</span>
-          <span className="shortcut-item"><kbd>Del</kbd> Delete Task</span>
+        <div className="shortcuts-info" aria-label="Keyboard Shortcuts">
+          <span className="shortcut-item">
+            <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
+            <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
+             + <kbd>Shift</kbd> + <kbd>S</kbd> 
+            <span className="shortcut-label">Save</span>
+          </span>
+          <span className="shortcut-item">
+            <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
+            <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
+             + <kbd>Shift</kbd> + <kbd>E</kbd>
+            <span className="shortcut-label">Export PDF</span>
+          </span>
+          <span className="shortcut-item">
+            <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
+            <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
+             + <kbd>Shift</kbd> + <kbd>A</kbd>
+            <span className="shortcut-label">Add Task</span>
+          </span>
+          <span className="shortcut-item"><kbd>Del</kbd> <span className="shortcut-label">Delete Task</span></span>
         </div>
       </footer>
 

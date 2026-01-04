@@ -8,31 +8,41 @@ function ThemeSelector({ currentTheme, onThemeChange }) {
   ) || 'custom'
 
   return (
-    <div className="theme-selector">
-      <label className="theme-label">Pre-defined Themes:</label>
-      <div className="theme-options">
-        {Object.keys(defaultThemes).map(key => (
-          <button
-            key={key}
-            className={`theme-option-btn ${currentThemeKey === key ? 'active' : ''}`}
-            onClick={() => onThemeChange(defaultThemes[key])}
-            title={key.charAt(0).toUpperCase() + key.slice(1)}
-          >
-            <div 
-              className="theme-preview" 
-              style={{ 
-                backgroundColor: defaultThemes[key].background,
-                borderColor: defaultThemes[key].primary
-              }}
+    <div className="theme-selector" role="group" aria-labelledby="predefined-themes-label">
+      <label id="predefined-themes-label" className="theme-label">Pre-defined Themes:</label>
+      <div className="theme-options" role="radiogroup" aria-labelledby="predefined-themes-label">
+        {Object.keys(defaultThemes).map(key => {
+          const themeName = key.charAt(0).toUpperCase() + key.slice(1)
+          const isActive = currentThemeKey === key
+          
+          return (
+            <button
+              key={key}
+              type="button"
+              className={`theme-option-btn ${isActive ? 'active' : ''}`}
+              onClick={() => onThemeChange(defaultThemes[key])}
+              title={themeName}
+              role="radio"
+              aria-checked={isActive}
+              aria-label={`${themeName} theme`}
             >
               <div 
-                className="theme-preview-color" 
-                style={{ backgroundColor: defaultThemes[key].primary }} 
-              />
-            </div>
-            <span>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
-          </button>
-        ))}
+                className="theme-preview" 
+                style={{ 
+                  backgroundColor: defaultThemes[key].background,
+                  borderColor: defaultThemes[key].primary
+                }}
+                aria-hidden="true"
+              >
+                <div 
+                  className="theme-preview-color" 
+                  style={{ backgroundColor: defaultThemes[key].primary }} 
+                />
+              </div>
+              <span aria-hidden="true">{themeName}</span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )

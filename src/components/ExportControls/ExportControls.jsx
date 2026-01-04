@@ -43,15 +43,17 @@ function ExportControls({ ganttContainerRef }) {
         onClick={handleExportPDF} 
         className={`export-btn ${isExporting ? 'exporting' : ''}`}
         disabled={isExporting}
+        aria-label={isExporting ? "Exporting PDF" : "Export Gantt chart to PDF"}
+        aria-busy={isExporting}
       >
         {isExporting ? (
-          <>
-            <span className="spinner"></span>
+          <span aria-live="polite" className="export-status">
+            <span className="spinner" aria-hidden="true"></span>
             Exporting PDF...
-          </>
+          </span>
         ) : (
           <>
-            <i className="fa-solid fa-file-export"></i>
+            <i className="fa-solid fa-file-export" aria-hidden="true"></i>
             Export PDF
           </>
         )}

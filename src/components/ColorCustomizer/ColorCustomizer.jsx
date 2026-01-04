@@ -15,8 +15,8 @@ function ColorCustomizer({ theme, onThemeChange }) {
   ]
 
   return (
-    <div className="color-customizer">
-      <h3 className="customizer-title">Customize Colors</h3>
+    <div className="color-customizer" role="group" aria-labelledby="customize-colors-title">
+      <h3 id="customize-colors-title" className="customizer-title">Customize Colors</h3>
       <div className="color-grid">
         {colors.map(({ key, label }) => (
           <div key={key} className="color-field">
@@ -27,12 +27,14 @@ function ColorCustomizer({ theme, onThemeChange }) {
                 type="color"
                 value={theme[key]}
                 onChange={(e) => updateColor(key, e.target.value)}
+                aria-label={`${label} picker`}
               />
               <input
                 type="text"
                 value={theme[key]}
                 onChange={(e) => updateColor(key, e.target.value)}
                 className="color-hex-input"
+                aria-label={`${label} hex value`}
               />
             </div>
           </div>

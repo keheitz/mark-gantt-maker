@@ -71,8 +71,21 @@ const GanttChart = forwardRef(({ tasks, options = {} }, ref) => {
   }, [tasks, options])
 
   return (
-    <div className="gantt-wrapper" ref={ref}>
-      <div ref={ganttContainer} className="gantt-container" />
+    <div 
+      className="gantt-wrapper" 
+      ref={ref}
+      role="region"
+      aria-label="Gantt Chart"
+      tabIndex="0"
+    >
+      <div 
+        ref={ganttContainer} 
+        className="gantt-container" 
+        aria-hidden="true" 
+      />
+      <div className="sr-only">
+        Gantt chart displaying {tasks.length} tasks. Use the task list to edit task details.
+      </div>
     </div>
   )
 })

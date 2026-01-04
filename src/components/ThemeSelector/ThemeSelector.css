@@ -34,6 +34,11 @@
   transform: translateY(-2px);
 }
 
+.theme-option-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .theme-option-btn.active {
   border-color: var(--color-primary);
   background-color: rgba(79, 70, 229, 0.05);
@@ -103,13 +108,14 @@
   margin: 0;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--color-text-muted, #6b7280);
-  line-height: 1;
+.close-btn:hover {
+  color: var(--color-text);
+}
+
+.close-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .modal-body {
@@ -138,4 +144,9 @@
 
 .primary-btn:hover {
   opacity: 0.9;
+}
+
+.primary-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

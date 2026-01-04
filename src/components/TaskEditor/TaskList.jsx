@@ -43,28 +43,47 @@ function TaskRow({ task, onEdit, onDelete, allTasks, isSelected, onSelect }) {
   
   const dependencyNames = getDependencyNames()
   
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onSelect(task.id)
+    }
+  }
+
   return (
     <div 
       className={`task-row ${isSelected ? 'selected' : ''}`}
       onClick={() => onSelect(task.id)}
+      role="button"
+      tabIndex="0"
+      onKeyDown={handleKeyDown}
+      aria-pressed={isSelected}
+      aria-label={`Task: ${task.name}`}
     >
       <div className="task-info">
         <div className="task-name-row">
           <span className="task-name">{task.name}</span>
-          <span className="task-id">ID: {task.id}</span>
+          <span className="task-id" aria-label={`Task ID: ${task.id}`}>ID: {task.id}</span>
         </div>
         <div className="task-times">
           <span className="task-time">
             <span className="time-label">Start:</span> {formatDisplayDateTime(task.start)}
           </span>
-          <span className="time-arrow">→</span>
+          <span className="time-arrow" aria-hidden="true">→</span>
           <span className="task-time">
             <span className="time-label">End:</span> {formatDisplayDateTime(task.end)}
           </span>
         </div>
         <div className="task-meta">
           <div className="task-progress">
-            <div className="progress-bar">
+            <div 
+              className="progress-bar"
+              role="progressbar"
+              aria-valuenow={task.progress || 0}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-label="Task progress"
+            >
               <div 
                 className="progress-fill" 
                 style={{ width: `${task.progress || 0}%` }}
@@ -86,12 +105,13 @@ function TaskRow({ task, onEdit, onDelete, allTasks, isSelected, onSelect }) {
           className="btn-icon edit" 
           onClick={() => onEdit(task)}
           title="Edit task"
+          aria-label={`Edit task: ${task.name}`}
         >
-          <i className="fa-solid fa-pen-to-square"></i>
+          <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i>
         </button>
         
         {showConfirmDelete ? (
-          <div className="delete-confirm">
+          <div className="delete-confirm" role="group" aria-label="Confirm deletion">
             <span className="delete-confirm-text">Delete?</span>
             <button 
               type="button"
@@ -101,16 +121,18 @@ function TaskRow({ task, onEdit, onDelete, allTasks, isSelected, onSelect }) {
                 setShowConfirmDelete(false)
               }}
               title="Confirm delete"
+              aria-label="Confirm delete task"
             >
-              <i className="fa-solid fa-check"></i>
+              <i className="fa-solid fa-check" aria-hidden="true"></i>
             </button>
             <button 
               type="button"
               className="btn-icon confirm-no" 
               onClick={() => setShowConfirmDelete(false)}
               title="Cancel delete"
+              aria-label="Cancel delete task"
             >
-              <i className="fa-solid fa-xmark"></i>
+              <i className="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
           </div>
         ) : (
@@ -119,8 +141,9 @@ function TaskRow({ task, onEdit, onDelete, allTasks, isSelected, onSelect }) {
             className="btn-icon delete" 
             onClick={() => setShowConfirmDelete(true)}
             title="Delete task"
+            aria-label={`Delete task: ${task.name}`}
           >
-            <i className="fa-solid fa-trash-can"></i>
+            <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
           </button>
         )}
       </div>
@@ -165,37 +188,39 @@ function TaskList({ tasks, onAddTask, onUpdateTask, onDeleteTask, selectedTaskId
   }
 
   return (
-    <div className="task-list-container">
+    <div className="task-list-container" role="region" aria-label="Task Management">
       <div className="task-list-header">
         <h2>Tasks</h2>
         <button 
           type="button"
           className="btn-add-task" 
           onClick={handleAddNew}
+          aria-label="Add a new task"
         >
-          <i className="fa-solid fa-plus"></i>
+          <i className="fa-solid fa-plus" aria-hidden="true"></i>
           Add Task
         </button>
       </div>
       
       {tasks.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon"><i className="fa-solid fa-clipboard-list"></i></div>
+        <div className="empty-state" role="status">
+          <div className="empty-icon"><i className="fa-solid fa-clipboard-list" aria-hidden="true"></i></div>
           <p className="empty-title">No tasks yet</p>
           <p className="empty-subtitle">Click "Add Task" to create your first task</p>
         </div>
       ) : (
-        <div className="task-list">
+        <div className="task-list" role="list">
           {tasks.map(task => (
-            <TaskRow
-              key={task.id}
-              task={task}
-              onEdit={handleEdit}
-              onDelete={onDeleteTask}
-              allTasks={tasks}
-              isSelected={selectedTaskId === task.id}
-              onSelect={handleSelect}
-            />
+            <div key={task.id} role="listitem">
+              <TaskRow
+                task={task}
+                onEdit={handleEdit}
+                onDelete={onDeleteTask}
+                allTasks={tasks}
+                isSelected={selectedTaskId === task.id}
+                onSelect={handleSelect}
+              />
+            </div>
           ))}
         </div>
       )}
