@@ -1,5 +1,6 @@
-import { useState } from 'react'
 import GanttChart from './components/GanttChart/GanttChart'
+import TaskList from './components/TaskEditor/TaskList'
+import { useGanttData } from './hooks/useGanttData'
 import { getTodayDateString } from './utils/viewModes'
 import './styles/globals.css'
 
@@ -12,69 +13,41 @@ function getSampleTasks() {
   
   return [
     {
-      id: '1',
+      id: 'task-1',
       name: 'Morning Standup',
       start: `${today} 09:00`,
       end: `${today} 09:15`,
       progress: 100
     },
     {
-      id: '2',
+      id: 'task-2',
       name: 'Deep Work Session',
       start: `${today} 09:15`,
       end: `${today} 10:30`,
-      progress: 75
+      progress: 75,
+      dependencies: 'task-1'
     },
     {
-      id: '3',
+      id: 'task-3',
       name: 'Coffee Break',
       start: `${today} 10:30`,
       end: `${today} 10:45`,
-      progress: 100
+      progress: 100,
+      dependencies: 'task-2'
     },
     {
-      id: '4',
+      id: 'task-4',
       name: 'Team Meeting',
       start: `${today} 11:00`,
       end: `${today} 12:00`,
       progress: 50,
-      dependencies: '2'
-    },
-    {
-      id: '5',
-      name: 'Lunch',
-      start: `${today} 12:00`,
-      end: `${today} 13:00`,
-      progress: 0
-    },
-    {
-      id: '6',
-      name: 'Afternoon Focus',
-      start: `${today} 13:00`,
-      end: `${today} 15:00`,
-      progress: 0,
-      dependencies: '5'
-    },
-    {
-      id: '7',
-      name: 'Quick Sync',
-      start: `${today} 15:00`,
-      end: `${today} 15:15`,
-      progress: 0
-    },
-    {
-      id: '8',
-      name: 'Code Review',
-      start: `${today} 15:15`,
-      end: `${today} 16:00`,
-      progress: 0,
-      dependencies: '6'
+      dependencies: 'task-3'
     }
   ]
 }
 
 function App() {
-  const [tasks] = useState(getSampleTasks)
+  const { tasks, addTask, updateTask, deleteTask } = useGanttData(getSampleTasks)
 
   return (
     <div className="app">
@@ -83,6 +56,12 @@ function App() {
         <p className="subtitle">15-Minute Time-Blocking View</p>
       </header>
       <main className="app-main">
+        <TaskList
+          tasks={tasks}
+          onAddTask={addTask}
+          onUpdateTask={updateTask}
+          onDeleteTask={deleteTask}
+        />
         <GanttChart tasks={tasks} />
       </main>
     </div>

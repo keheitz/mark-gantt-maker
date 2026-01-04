@@ -12,7 +12,7 @@ export const FIFTEEN_MINUTE_VIEW = {
   name: '15-Minute',
   // Step is in hours for frappe-gantt: 15 minutes = 0.25 hours
   step: 0.25,
-  column_width: 40,
+  column_width: 55,
   date_format: 'HH:mm',
   
   /**
