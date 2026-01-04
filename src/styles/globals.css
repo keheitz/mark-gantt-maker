@@ -222,3 +222,84 @@ kbd {
   85% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-5px); }
 }
+
+/* Responsive Design */
+
+@media (max-width: 900px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-md);
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .header-actions .export-controls {
+    order: 3;
+    width: 100%;
+  }
+
+  .save-status-msg {
+    order: 0;
+  }
+
+  .theme-toggle-btn, .reset-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-main {
+    padding: var(--spacing-md);
+  }
+
+  .shortcuts-info {
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: center;
+  }
+
+  .shortcut-item {
+    font-size: 0.7rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xs);
+  }
+
+  .header-actions .export-controls {
+    grid-column: span 2;
+  }
+
+  .save-status-msg {
+    grid-column: span 2;
+    text-align: center;
+  }
+
+  .shortcuts-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .shortcut-item {
+    justify-content: flex-start;
+  }
+}

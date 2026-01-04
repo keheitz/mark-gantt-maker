@@ -41,3 +41,13 @@
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 480px) {
+  .export-controls, .export-btn {
+    width: 100%;
+  }
+
+  .export-btn {
+    justify-content: center;
+  }
+}

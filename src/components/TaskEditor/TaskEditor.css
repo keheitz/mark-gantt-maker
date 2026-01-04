@@ -860,3 +860,65 @@
   background: var(--color-background);
   border-color: var(--color-text-muted);
 }
+
+/* Responsive Task List */
+
+@media (max-width: 768px) {
+  .task-list-container {
+    padding: var(--spacing-md);
+  }
+
+  .task-row {
+    flex-direction: column;
+    position: relative;
+    padding-bottom: var(--spacing-xl);
+  }
+
+  .task-actions {
+    position: absolute;
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
+    margin-left: 0;
+  }
+
+  .task-meta {
+    gap: var(--spacing-sm);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-times {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .time-arrow {
+    display: none;
+  }
+
+  .task-name-row {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .btn-add-task {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .task-progress {
+    width: 100%;
+  }
+
+  .progress-bar {
+    flex: 1;
+  }
+}
