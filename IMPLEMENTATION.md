@@ -1074,8 +1074,9 @@ Ensure the application works well on different screen sizes using CSS media quer
 
 ### Step 11.4: Add Keyboard Shortcuts (Optional)
 
-- `Ctrl/Cmd + S`: Save
-- `Ctrl/Cmd + E`: Export PDF
+- `Ctrl/Cmd + Shift + S`: Save
+- `Ctrl/Cmd + Shift + E`: Export PDF
+- `Ctrl/Cmd + Shift + A`: Add task
 - `Delete`: Delete selected task
 
 ### Step 11.5: Add Animations and Transitions

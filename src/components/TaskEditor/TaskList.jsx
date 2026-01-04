@@ -24,7 +24,7 @@ function formatDisplayDateTime(dateTimeStr) {
 /**
  * Single task row component
  */
-function TaskRow({ task, onEdit, onDelete, allTasks }) {
+function TaskRow({ task, onEdit, onDelete, allTasks, isSelected, onSelect }) {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   
   // Get dependency task names
@@ -44,7 +44,10 @@ function TaskRow({ task, onEdit, onDelete, allTasks }) {
   const dependencyNames = getDependencyNames()
   
   return (
-    <div className="task-row">
+    <div 
+      className={`task-row ${isSelected ? 'selected' : ''}`}
+      onClick={() => onSelect(task.id)}
+    >
       <div className="task-info">
         <div className="task-name-row">
           <span className="task-name">{task.name}</span>
@@ -77,7 +80,7 @@ function TaskRow({ task, onEdit, onDelete, allTasks }) {
         </div>
       </div>
       
-      <div className="task-actions">
+      <div className="task-actions" onClick={(e) => e.stopPropagation()}>
         <button 
           type="button"
           className="btn-icon edit" 
@@ -128,7 +131,7 @@ function TaskRow({ task, onEdit, onDelete, allTasks }) {
 /**
  * TaskList component for displaying and managing all tasks
  */
-function TaskList({ tasks, onAddTask, onUpdateTask, onDeleteTask }) {
+function TaskList({ tasks, onAddTask, onUpdateTask, onDeleteTask, selectedTaskId, setSelectedTaskId }) {
   const [editingTask, setEditingTask] = useState(null)
   const [isAddingTask, setIsAddingTask] = useState(false)
   
@@ -155,6 +158,10 @@ function TaskList({ tasks, onAddTask, onUpdateTask, onDeleteTask }) {
   const handleAddNew = () => {
     setEditingTask(null)
     setIsAddingTask(true)
+  }
+
+  const handleSelect = (taskId) => {
+    setSelectedTaskId(prevId => prevId === taskId ? null : taskId)
   }
 
   return (
@@ -186,6 +193,8 @@ function TaskList({ tasks, onAddTask, onUpdateTask, onDeleteTask }) {
               onEdit={handleEdit}
               onDelete={onDeleteTask}
               allTasks={tasks}
+              isSelected={selectedTaskId === task.id}
+              onSelect={handleSelect}
             />
           ))}
         </div>

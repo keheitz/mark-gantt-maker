@@ -41,6 +41,8 @@ function App() {
   
   const { theme, setTheme } = useTheme()
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
+  const [selectedTaskId, setSelectedTaskId] = useState(null)
+  const [saveStatus, setSaveStatus] = useState(null)
   const ganttRef = useRef(null)
 
   // Memoize data to prevent unnecessary auto-save triggers on every render
@@ -57,6 +59,55 @@ function App() {
     }
   }
 
+  // Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+      const modifier = isMac ? e.metaKey : e.ctrlKey
+
+      // Ctrl/Cmd + Shift + S: Save
+      if (modifier && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        setSaveStatus('Saving...')
+        setTimeout(() => {
+          setSaveStatus('Saved!')
+          setTimeout(() => setSaveStatus(null), 2000)
+        }, 300)
+      }
+
+      // Ctrl/Cmd + Shift + E: Export PDF
+      if (modifier && e.shiftKey && e.key.toLowerCase() === 'e') {
+        e.preventDefault()
+        // Find the export button and click it
+        const exportBtn = document.querySelector('.export-btn')
+        if (exportBtn) exportBtn.click()
+      }
+
+      // Ctrl/Cmd + Shift + A: Add Task
+      if (modifier && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault()
+        const addBtn = document.querySelector('.btn-add-task')
+        if (addBtn) addBtn.click()
+      }
+
+      // Delete: Delete selected task
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Only delete if we have a selected task and aren't in an input field
+        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)
+        if (selectedTaskId && !isInput) {
+          e.preventDefault()
+          if (window.confirm('Are you sure you want to delete the selected task?')) {
+            deleteTask(selectedTaskId)
+            setSelectedTaskId(null)
+          }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedTaskId, deleteTask])
+
   return (
     <div className="app">
       <header className="app-header">
@@ -65,6 +116,7 @@ function App() {
           <p className="subtitle">15-Minute Time-Blocking View</p>
         </div>
         <div className="header-actions">
+          {saveStatus && <span className="save-status-msg">{saveStatus}</span>}
           <ExportControls ganttContainerRef={ganttRef} />
           <button 
             className="theme-toggle-btn" 
@@ -88,9 +140,20 @@ function App() {
           onAddTask={addTask}
           onUpdateTask={updateTask}
           onDeleteTask={deleteTask}
+          selectedTaskId={selectedTaskId}
+          setSelectedTaskId={setSelectedTaskId}
         />
         <GanttChart ref={ganttRef} tasks={tasks} />
       </main>
+
+      <footer className="app-footer">
+        <div className="shortcuts-info">
+          <span className="shortcut-item"><kbd>{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> Save</span>
+          <span className="shortcut-item"><kbd>{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> Export PDF</span>
+          <span className="shortcut-item"><kbd>{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd> Add Task</span>
+          <span className="shortcut-item"><kbd>Del</kbd> Delete Task</span>
+        </div>
+      </footer>
 
       <ThemeModal 
         isOpen={isThemeModalOpen} 
