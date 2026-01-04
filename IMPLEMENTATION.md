@@ -1,6 +1,6 @@
-# Implementation Guide - Mark Gantt Maker
+# Implementation Guide - Mark's Gantt Maker
 
-This document provides a comprehensive, step-by-step guide for implementing the Mark Gantt Maker application. Follow these phases sequentially to build the complete application.
+This document provides a comprehensive, step-by-step guide for implementing the Mark's Gantt Maker application. Follow these phases sequentially to build the complete application.
 
 ## Table of Contents
 
@@ -225,7 +225,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Mark Gantt Maker</h1>
+        <h1>Mark's Gantt Maker</h1>
       </header>
       <main>
         <GanttChart tasks={tasks} />

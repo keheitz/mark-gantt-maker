@@ -161,8 +161,14 @@ body {
   padding: var(--spacing-md) var(--spacing-xl);
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
+}
+
+.footer-content {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
 }
 
 .shortcuts-info {
@@ -170,6 +176,13 @@ body {
   gap: var(--spacing-xl);
   color: var(--color-text-muted);
   font-size: 0.75rem;
+}
+
+.gift-note {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  opacity: 0.8;
 }
 
 .shortcut-item {

@@ -112,7 +112,7 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <h1>Mark Gantt Maker</h1>
+          <h1>Mark's Gantt Maker</h1>
           <p className="subtitle">15-Minute Time-Blocking View</p>
         </div>
         <div className="header-actions">
@@ -157,26 +157,31 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <div className="shortcuts-info" aria-label="Keyboard Shortcuts">
-          <span className="shortcut-item">
-            <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
-            <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
-             + <kbd>Shift</kbd> + <kbd>S</kbd> 
-            <span className="shortcut-label">Save</span>
-          </span>
-          <span className="shortcut-item">
-            <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
-            <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
-             + <kbd>Shift</kbd> + <kbd>E</kbd>
-            <span className="shortcut-label">Export PDF</span>
-          </span>
-          <span className="shortcut-item">
-            <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
-            <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
-             + <kbd>Shift</kbd> + <kbd>A</kbd>
-            <span className="shortcut-label">Add Task</span>
-          </span>
-          <span className="shortcut-item"><kbd>Del</kbd> <span className="shortcut-label">Delete Task</span></span>
+        <div className="footer-content">
+          <div className="shortcuts-info" aria-label="Keyboard Shortcuts">
+            <span className="shortcut-item">
+              <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
+              <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
+               + <kbd>Shift</kbd> + <kbd>S</kbd> 
+              <span className="shortcut-label">Save</span>
+            </span>
+            <span className="shortcut-item">
+              <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
+              <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
+               + <kbd>Shift</kbd> + <kbd>E</kbd>
+              <span className="shortcut-label">Export PDF</span>
+            </span>
+            <span className="shortcut-item">
+              <kbd aria-hidden="true">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}</kbd>
+              <span className="sr-only">{navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Command' : 'Control'}</span>
+               + <kbd>Shift</kbd> + <kbd>A</kbd>
+              <span className="shortcut-label">Add Task</span>
+            </span>
+            <span className="shortcut-item"><kbd>Del</kbd> <span className="shortcut-label">Delete Task</span></span>
+          </div>
+          <div className="gift-note">
+            Christmas 2026 gift for Mark
+          </div>
         </div>
       </footer>
 

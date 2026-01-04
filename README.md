@@ -1,4 +1,4 @@
-# Mark Gantt Maker
+# Mark's Gantt Maker
 
 A modern, client-side Gantt chart application with minute-level precision, built with React and frappe-gantt. Create detailed project timelines with 15-minute interval precision, customize appearance with themes and color pickers, and export high-quality PDFs - all running entirely in your browser.
 
