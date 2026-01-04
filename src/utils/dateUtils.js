@@ -51,3 +51,43 @@ export function formatDate(date) {
   
   return `${year}-${month}-${day}`
 }
+
+/**
+ * Formats a Date object to a human-readable time string (e.g., 9:00 AM)
+ * @param {Date} date - Date object to format
+ * @returns {string} Formatted time string
+ */
+export function formatTime(date) {
+  if (!date || !(date instanceof Date)) return ''
+  
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  const displayHours = hours % 12 || 12
+  const displayMinutes = String(minutes).padStart(2, '0')
+  
+  return `${displayHours}:${displayMinutes} ${ampm}`
+}
+
+/**
+ * Formats a task's start and end dates into a readable range
+ * @param {Date} start - Start date
+ * @param {Date} end - End date
+ * @returns {string} Formatted range string
+ */
+export function formatTaskRange(start, end) {
+  if (!start || !end) return ''
+  
+  const startStr = formatTime(start)
+  const endStr = formatTime(end)
+  
+  const options = { month: 'short', day: 'numeric' }
+  const startDateStr = start.toLocaleDateString('en-US', options)
+  const endDateStr = end.toLocaleDateString('en-US', options)
+  
+  if (startDateStr === endDateStr) {
+    return `${startDateStr}, ${startStr} – ${endStr}`
+  }
+  
+  return `${startDateStr}, ${startStr} – ${endDateStr}, ${endStr}`
+}

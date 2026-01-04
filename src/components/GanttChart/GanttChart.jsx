@@ -1,6 +1,7 @@
 import { useEffect, useRef, forwardRef } from 'react'
 import Gantt from 'frappe-gantt'
 import { FIFTEEN_MINUTE_VIEW } from '../../utils/viewModes'
+import { formatTaskRange } from '../../utils/dateUtils'
 import './GanttChart.css'
 
 /**
@@ -34,6 +35,16 @@ const GanttChart = forwardRef(({ tasks, options = {} }, ref) => {
       date_format: 'YYYY-MM-DD HH:mm',
       popup_trigger: 'click',
       language: 'en',
+      custom_popup_html: (task) => {
+        const timeRange = formatTaskRange(task._start, task._end)
+        return `
+          <div class="custom-gantt-popup">
+            <div class="popup-title">${task.name}</div>
+            <div class="popup-range">${timeRange}</div>
+            ${task.progress > 0 ? `<div class="popup-progress">${task.progress}% complete</div>` : ''}
+          </div>
+        `
+      },
       ...options
     }
 

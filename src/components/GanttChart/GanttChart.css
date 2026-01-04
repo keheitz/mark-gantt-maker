@@ -114,22 +114,56 @@
   border: 1px solid var(--color-border, #e5e7eb);
   border-radius: var(--border-radius, 8px);
   box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: var(--spacing-md, 16px);
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 0;
   font-family: var(--font-family, 'DM Sans', sans-serif);
+  min-width: 200px;
+  z-index: 1000;
 }
 
-.gantt-container .popup-wrapper .title {
+.custom-gantt-popup {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.custom-gantt-popup .popup-title {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text, #1a1d21);
-  margin-bottom: var(--spacing-sm, 8px);
+  font-weight: 700;
+  color: var(--color-primary, #2d3a4f);
+  line-height: 1.4;
 }
 
-.gantt-container .popup-wrapper .subtitle {
+.custom-gantt-popup .popup-range {
   font-size: 12px;
   color: var(--color-text-muted, #6b7280);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+.custom-gantt-popup .popup-progress {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-secondary, #4a6fa5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gantt-container .popup-wrapper .pointer {
+  border-top-color: var(--color-border, #e5e7eb);
+}
+
+.gantt-container .popup-wrapper .pointer::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -7px;
+  border: 7px solid transparent;
+  border-top-color: var(--color-surface, #ffffff);
 }
 
 /* Custom class colors for task categories */
