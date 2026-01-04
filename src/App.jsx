@@ -6,7 +6,7 @@ import ExportControls from './components/ExportControls/ExportControls'
 import { useGanttData } from './hooks/useGanttData'
 import { useTheme } from './hooks/useTheme'
 import { useAutoSave } from './hooks/useAutoSave'
-import { loadFromLocalStorage } from './utils/localStorage'
+import { loadFromLocalStorage, clearLocalStorage } from './utils/localStorage'
 import { getTodayDateString } from './utils/viewModes'
 import './styles/globals.css'
 import './styles/themes.css'
@@ -30,7 +30,7 @@ function getSampleTasks() {
 }
 
 function App() {
-  const { tasks, addTask, updateTask, deleteTask } = useGanttData(() => {
+  const { tasks, addTask, updateTask, deleteTask, replaceTasks } = useGanttData(() => {
     const saved = loadFromLocalStorage()
     // Check if saved exists and has a tasks array (even if empty)
     if (saved && Array.isArray(saved.tasks)) {
@@ -47,6 +47,16 @@ function App() {
   const autoSaveData = useMemo(() => ({ tasks }), [tasks])
   useAutoSave(autoSaveData)
 
+  /**
+   * Resets the chart to the original sample tasks and clears storage
+   */
+  const handleReset = () => {
+    if (window.confirm('Are you sure you want to reset the chart? This will clear all your tasks.')) {
+      clearLocalStorage()
+      replaceTasks(getSampleTasks())
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -62,6 +72,13 @@ function App() {
             title="Change Theme"
           >
             <i className="fas fa-palette"></i> Theme
+          </button>
+          <button 
+            className="reset-btn" 
+            onClick={handleReset}
+            title="Reset to Sample Tasks"
+          >
+            <i className="fas fa-rotate-left"></i> Reset
           </button>
         </div>
       </header>
