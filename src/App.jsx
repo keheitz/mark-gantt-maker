@@ -1,10 +1,12 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import GanttChart from './components/GanttChart/GanttChart'
 import TaskList from './components/TaskEditor/TaskList'
 import ThemeModal from './components/ThemeSelector/ThemeModal'
 import ExportControls from './components/ExportControls/ExportControls'
 import { useGanttData } from './hooks/useGanttData'
 import { useTheme } from './hooks/useTheme'
+import { useAutoSave } from './hooks/useAutoSave'
+import { loadFromLocalStorage } from './utils/localStorage'
 import { getTodayDateString } from './utils/viewModes'
 import './styles/globals.css'
 import './styles/themes.css'
@@ -28,10 +30,22 @@ function getSampleTasks() {
 }
 
 function App() {
-  const { tasks, addTask, updateTask, deleteTask } = useGanttData(getSampleTasks)
+  const { tasks, addTask, updateTask, deleteTask } = useGanttData(() => {
+    const saved = loadFromLocalStorage()
+    // Check if saved exists and has a tasks array (even if empty)
+    if (saved && Array.isArray(saved.tasks)) {
+      return saved.tasks
+    }
+    return getSampleTasks()
+  })
+  
   const { theme, setTheme } = useTheme()
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
   const ganttRef = useRef(null)
+
+  // Memoize data to prevent unnecessary auto-save triggers on every render
+  const autoSaveData = useMemo(() => ({ tasks }), [tasks])
+  useAutoSave(autoSaveData)
 
   return (
     <div className="app">
