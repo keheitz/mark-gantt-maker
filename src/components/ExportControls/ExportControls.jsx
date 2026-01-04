@@ -50,7 +50,10 @@ function ExportControls({ ganttContainerRef }) {
             Exporting PDF...
           </>
         ) : (
-          'Export PDF'
+          <>
+            <i className="fa-solid fa-file-export"></i>
+            Export PDF
+          </>
         )}
       </button>
     </div>

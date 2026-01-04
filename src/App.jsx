@@ -10,8 +10,8 @@ import './styles/globals.css'
 import './styles/themes.css'
 
 /**
- * Gets today's date and creates sample tasks for demonstrating 15-minute view.
- * @returns {Array} Array of sample task objects
+ * Gets today's date and creates a single example task for the initial state.
+ * @returns {Array} Array with one example task object
  */
 function getSampleTasks() {
   const today = getTodayDateString()
@@ -19,34 +19,10 @@ function getSampleTasks() {
   return [
     {
       id: 'task-1',
-      name: 'Morning Standup',
+      name: 'Example Task',
       start: `${today} 09:00`,
-      end: `${today} 09:15`,
-      progress: 100
-    },
-    {
-      id: 'task-2',
-      name: 'Deep Work Session',
-      start: `${today} 09:15`,
-      end: `${today} 10:30`,
-      progress: 75,
-      dependencies: 'task-1'
-    },
-    {
-      id: 'task-3',
-      name: 'Coffee Break',
-      start: `${today} 10:30`,
-      end: `${today} 10:45`,
-      progress: 100,
-      dependencies: 'task-2'
-    },
-    {
-      id: 'task-4',
-      name: 'Team Meeting',
-      start: `${today} 11:00`,
-      end: `${today} 12:00`,
-      progress: 50,
-      dependencies: 'task-3'
+      end: `${today} 10:00`,
+      progress: 0
     }
   ]
 }
