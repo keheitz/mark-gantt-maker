@@ -138,29 +138,73 @@ function TimeOnlyPicker({ value, dateString, onChange, label }) {
 }
 
 /**
- * Dependency selector component for choosing task dependencies
+ * Detects if adding a dependency would create a circular dependency chain
+ * @param {string} currentTaskId - The task being edited
+ * @param {string[]} proposedDependencies - Dependencies to check
+ * @param {Array} allTasks - All tasks in the project
+ * @returns {string|null} - Error message if circular, null if valid
  */
-function DependencySelector({ selectedDependencies, availableTasks, onChange, currentTaskId }) {
-  // Filter out current task and sort by start time descending (most recent first)
+function detectCircularDependency(currentTaskId, proposedDependencies, allTasks) {
+  if (!currentTaskId || proposedDependencies.length === 0) return null
+  
+  // Build a map of task dependencies for quick lookup
+  const depsMap = new Map()
+  allTasks.forEach(task => {
+    // Ensure dependencies is a string before splitting
+    const depsValue = task.dependencies
+    const depsString = typeof depsValue === 'string' ? depsValue : String(depsValue || '')
+    const deps = depsString ? depsString.split(',').filter(Boolean).map(d => d.trim()) : []
+    depsMap.set(task.id, deps)
+  })
+  
+  // For the current task, use proposed dependencies
+  depsMap.set(currentTaskId, proposedDependencies)
+  
+  // Check each proposed dependency to see if it eventually depends on currentTaskId
+  const visited = new Set()
+  const visiting = new Set()
+  
+  function hasCycle(taskId) {
+    if (visiting.has(taskId)) return true // Cycle detected
+    if (visited.has(taskId)) return false // Already checked, no cycle
+    
+    visiting.add(taskId)
+    
+    const deps = depsMap.get(taskId) || []
+    for (const dep of deps) {
+      if (hasCycle(dep)) return true
+    }
+    
+    visiting.delete(taskId)
+    visited.add(taskId)
+    return false
+  }
+  
+  // Start from current task
+  if (hasCycle(currentTaskId)) {
+    return 'This would create a circular dependency. Tasks cannot depend on each other in a loop.'
+  }
+  
+  return null
+}
+
+/**
+ * Multi-select dropdown for choosing task dependencies
+ */
+function DependencySelector({ selectedDependencies, availableTasks, onChange, currentTaskId, error }) {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  // Filter out current task and sort by name
   const filteredTasks = availableTasks
     .filter(t => t.id !== currentTaskId)
-    .sort((a, b) => {
-      // Parse start times for comparison
-      const getTime = (task) => {
-        if (!task.start) return 0
-        const [datePart, timePart] = task.start.split(' ')
-        const [year, month, day] = datePart.split('-').map(Number)
-        const [hours, minutes] = (timePart || '00:00').split(':').map(Number)
-        return new Date(year, month - 1, day, hours, minutes).getTime()
-      }
-      return getTime(b) - getTime(a) // Descending order
-    })
+    .sort((a, b) => a.name.localeCompare(b.name))
   
   // Ensure selectedDependencies is a string before splitting
   const depsString = typeof selectedDependencies === 'string' ? selectedDependencies : String(selectedDependencies || '')
   const selectedIds = depsString.split(',').filter(Boolean).map(s => s.trim())
   
-  const toggleDependency = (taskId) => {
+  const toggleDependency = (taskId, e) => {
+    e.stopPropagation()
     let newDeps
     if (selectedIds.includes(taskId)) {
       newDeps = selectedIds.filter(id => id !== taskId)
@@ -168,6 +212,17 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
       newDeps = [...selectedIds, taskId]
     }
     onChange(newDeps.join(','))
+  }
+  
+  const removeDependency = (taskId, e) => {
+    e.stopPropagation()
+    const newDeps = selectedIds.filter(id => id !== taskId)
+    onChange(newDeps.join(','))
+  }
+  
+  const getTaskName = (taskId) => {
+    const task = availableTasks.find(t => t.id === taskId)
+    return task ? task.name : taskId
   }
   
   if (filteredTasks.length === 0) {
@@ -179,18 +234,50 @@ function DependencySelector({ selectedDependencies, availableTasks, onChange, cu
   }
   
   return (
-    <div className="dependency-selector">
-      {filteredTasks.map(task => (
-        <label key={task.id} className="dependency-option">
-          <input
-            type="checkbox"
-            checked={selectedIds.includes(task.id)}
-            onChange={() => toggleDependency(task.id)}
-          />
-          <span className="dependency-name">{task.name}</span>
-          <span className="dependency-id">({task.id})</span>
-        </label>
-      ))}
+    <div className="dependency-multiselect">
+      <div 
+        className={`dependency-select-trigger ${isOpen ? 'open' : ''} ${error ? 'error' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="selected-deps">
+          {selectedIds.length === 0 ? (
+            <span className="placeholder">Select dependencies...</span>
+          ) : (
+            selectedIds.map(id => (
+              <span key={id} className="dep-tag">
+                {getTaskName(id)}
+                <button 
+                  type="button"
+                  className="dep-tag-remove" 
+                  onClick={(e) => removeDependency(id, e)}
+                  aria-label={`Remove ${getTaskName(id)}`}
+                >
+                  ×
+                </button>
+              </span>
+            ))
+          )}
+        </div>
+        <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
+      </div>
+      
+      {isOpen && (
+        <div className="dependency-dropdown">
+          {filteredTasks.map(task => (
+            <div 
+              key={task.id} 
+              className={`dependency-option ${selectedIds.includes(task.id) ? 'selected' : ''}`}
+              onClick={(e) => toggleDependency(task.id, e)}
+            >
+              <span className="dep-checkbox">
+                {selectedIds.includes(task.id) ? '✓' : ''}
+              </span>
+              <span className="dependency-name">{task.name}</span>
+              <span className="dependency-id">{task.id}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -299,6 +386,19 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
       
       if (endDate <= startDate) {
         newErrors.end = 'End time must be after start time'
+      }
+    }
+    
+    // Validate circular dependencies
+    if (task?.id && formData.dependencies) {
+      // Ensure dependencies is a string before splitting
+      const depsString = typeof formData.dependencies === 'string' 
+        ? formData.dependencies 
+        : String(formData.dependencies || '')
+      const proposedDeps = depsString.split(',').filter(Boolean).map(d => d.trim())
+      const circularError = detectCircularDependency(task.id, proposedDeps, allTasks)
+      if (circularError) {
+        newErrors.dependencies = circularError
       }
     }
     
@@ -427,7 +527,9 @@ function TaskEditor({ task, allTasks = [], onSave, onCancel }) {
               availableTasks={allTasks}
               onChange={(val) => handleChange('dependencies', val)}
               currentTaskId={task?.id}
+              error={errors.dependencies}
             />
+            {errors.dependencies && <span className="error-text">{errors.dependencies}</span>}
             <small className="help-text">Select tasks that must complete before this task can start</small>
           </div>
         </div>
