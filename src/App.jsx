@@ -180,7 +180,7 @@ function App() {
             <span className="shortcut-item"><kbd>Del</kbd> <span className="shortcut-label">Delete Task</span></span>
           </div>
           <div className="gift-note">
-            Christmas 2026 gift for Mark
+            Christmas 2025 gift for Mark
           </div>
         </div>
       </footer>
