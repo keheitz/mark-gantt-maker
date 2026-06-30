@@ -1,4 +1,5 @@
 # Mark's Gantt Maker
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e557666f-b34a-4402-bcb1-ea2cab75a36d/deploy-status)](https://app.netlify.com/projects/glistening-dieffenbachia-464ca0/deploys)
 
 A modern, client-side Gantt chart application with minute-level precision, built with React and frappe-gantt. Create detailed project timelines with 15-minute interval precision, customize appearance with themes and color pickers, and export high-quality PDFs - all running entirely in your browser.
 
